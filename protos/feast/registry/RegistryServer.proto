@@ -95,6 +95,9 @@ service RegistryServer{
   // Feature RPCs
   rpc ListFeatures (ListFeaturesRequest) returns (ListFeaturesResponse) {}
   rpc GetFeature (GetFeatureRequest) returns (Feature) {}
+
+  // SSO 接口：接收 JWT，解析并返回该用户组的项目
+  rpc GetProjectsByJWT (GetProjectsByJWTRequest) returns (ListProjectsResponse) {}
 }
 
 // Common pagination and sorting messages
@@ -488,6 +491,12 @@ message ListProjectsResponse {
 message DeleteProjectRequest {
   string name = 1;
   bool commit = 2;
+}
+
+// SSO 请求：传递 JWT，服务端解析获取 group
+message GetProjectsByJWTRequest {
+  string jwt_token = 1;
+  bool allow_cache = 2;
 }
 
 // Lineage

@@ -41,6 +41,7 @@ class Project:
     name: str
     description: str
     tags: Dict[str, str]
+    group: str
     owner: str
     created_timestamp: datetime
     last_updated_timestamp: datetime
@@ -52,6 +53,7 @@ class Project:
         description: str = "",
         tags: Optional[Dict[str, str]] = None,
         owner: str = "",
+        group: str = "",
         created_timestamp: Optional[datetime] = None,
         last_updated_timestamp: Optional[datetime] = None,
     ):
@@ -63,6 +65,7 @@ class Project:
             description (optional): A human-readable description.
             tags (optional): A dictionary of key-value pairs to store arbitrary metadata.
             owner (optional): The owner of the project, typically the email of the primary maintainer.
+            group (optional): 项目组名，用于多租户场景，默认为空字符串。
             created_timestamp (optional): The time when the project was created. Defaults to
             last_updated_timestamp (optional): The time when the project was last updated.
 
@@ -73,6 +76,7 @@ class Project:
         self.description = description
         self.tags = tags if tags is not None else {}
         self.owner = owner
+        self.group = group
         updated_time = _utc_now()
         self.created_timestamp = created_timestamp or updated_time
         self.last_updated_timestamp = last_updated_timestamp or updated_time
@@ -88,6 +92,7 @@ class Project:
             self.name != other.name
             or self.description != other.description
             or self.tags != other.tags
+            or self.group != other.group
             or self.owner != other.owner
             or self.created_timestamp != other.created_timestamp
             or self.last_updated_timestamp != other.last_updated_timestamp
@@ -136,6 +141,7 @@ class Project:
             description=project_proto.spec.description,
             tags=dict(project_proto.spec.tags),
             owner=project_proto.spec.owner,
+            group=project_proto.spec.group if project_proto.spec.group else "",
         )
         if project_proto.meta.HasField("created_timestamp"):
             project.created_timestamp = (
@@ -170,6 +176,7 @@ class Project:
             description=self.description,
             tags=self.tags,
             owner=self.owner,
+            group=self.group,
         )
 
         return ProjectProto(spec=spec, meta=meta)

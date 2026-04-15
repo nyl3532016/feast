@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/feast-favicon-36x36.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>Login Error - Feast Feature Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .error-container {
+            background: white;
+            border-radius: 12px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+        }
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background: #e74c3c;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 24px;
+        }
+        .error-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        .error-code {
+            display: inline-block;
+            background: #f8f9fa;
+            color: #e74c3c;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .error-message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .retry-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .retry-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .feast-logo {
+            margin-top: 32px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+        </div>
+        <h1>Authentication Failed</h1>
+        <div class="error-code" id="errorCode">Error Code: Unknown</div>
+        <div class="error-message" id="errorMessage">
+            An error occurred during authentication. Please try again.
+        </div>
+        <div class="feast-logo">Feast Feature Store</div>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Error code mapping
+        const errorMessages = {
+            '2001': 'Invalid token or parsing failed. Please check your token.',
+            '2002': 'Token signature verification failed. Please check your secret key.',
+            '2003': 'Your session has expired. Please log in again.',
+            '2004': 'Missing required parameter in token (user/group). Please contact administrator.',
+            '2005': 'Internal system error. Please try again later.',
+            '2999': 'An unexpected error occurred. Please try again later.'
+        };
+
+        // Display error information
+        const errorCode = getUrlParam('error_code') || '2999';
+        const errorMsg = getUrlParam('error_msg') || errorMessages[errorCode] || errorMessages['99999'];
+
+        document.getElementById('errorCode').textContent = `Error Code: ${errorCode}`;
+        document.getElementById('errorMessage').textContent = errorMsg;
+
+        // Log to console for debugging
+        console.log('SSO Error:', { code: errorCode, message: errorMsg });
+    </script>
+</body>
+</html>

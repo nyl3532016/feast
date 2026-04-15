@@ -580,6 +580,40 @@ class RemoteRegistry(BaseRegistry):
         response = self.stub.ListProjects(request)
         return [Project.from_proto(project) for project in response.projects]
 
+    def get_projects_by_jwt(
+        self,
+        jwt_token: str,
+        allow_cache: bool = False,
+    ) -> List[Project]:
+        """
+        根据 JWT Token 获取项目列表（Registry Server 解析 JWT 并过滤）
+
+        Args:
+            jwt_token: JWT Token 字符串
+            allow_cache: 是否允许使用缓存
+
+        Returns:
+            该用户组的项目列表
+
+        Raises:
+            Exception: JWT 验证失败时抛出，包含错误码和详细信息
+        """
+        import grpc
+
+        request = RegistryServer_pb2.GetProjectsByJWTRequest(
+            jwt_token=jwt_token,
+            allow_cache=allow_cache,
+        )
+
+        try:
+            response = self.stub.GetProjectsByJWT(request)
+            return [Project.from_proto(project) for project in response.projects]
+        except grpc.RpcError as e:
+            # 捕获 gRPC 错误，抛出包含错误码和详细信息的异常
+            error_code = e.code()
+            error_details = e.details()
+            raise Exception(f"JWT_ERROR [{error_code}]: {error_details}") from e
+
     def get_project_metadata(self, project: str, key: str) -> Optional[str]:
         request = RegistryServer_pb2.ListProjectMetadataRequest(project=project)
         response = self.stub.ListProjectMetadata(request)

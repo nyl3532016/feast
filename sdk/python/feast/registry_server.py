@@ -1031,6 +1031,82 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
             pagination=pagination_metadata,
         )
 
+    def GetProjectsByJWT(
+        self, request: RegistryServer_pb2.GetProjectsByJWTRequest, context
+    ):
+        import os
+        import grpc
+
+        JWT_SECRET = os.getenv("JWT_SECRET", "123456789")
+        JWT_ALGORITHM = "HS256"
+
+        # 1. 检查 JWT 是否为空
+        if not request.jwt_token:
+            context.set_code(grpc.StatusCode.UNAUTHENTICATED)
+            context.set_details("JWT_TOKEN_EMPTY: Missing authentication token")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        # 2. 解析 JWT
+        try:
+            import jwt
+
+            payload = jwt.decode(
+                request.jwt_token, JWT_SECRET, algorithms=[JWT_ALGORITHM]
+            )
+        except jwt.ExpiredSignatureError:
+            context.set_code(grpc.StatusCode.UNAUTHENTICATED)
+            context.set_details("JWT_TOKEN_EXPIRED: Token has expired")
+            return RegistryServer_pb2.ListProjectsResponse()
+        except jwt.InvalidTokenError as e:
+            context.set_code(grpc.StatusCode.UNAUTHENTICATED)
+            context.set_details(f"JWT_TOKEN_INVALID: {str(e)}")
+            return RegistryServer_pb2.ListProjectsResponse()
+        except Exception as e:
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details(f"JWT_DECODE_ERROR: {str(e)}")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        # 3. 获取 group
+        group = payload.get("group", "")
+        account = payload.get("account", "")
+        role = payload.get("role", "")
+        if not all([group, account, role]):
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details("JWT_NO_GROUP: No group found in token payload")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        print(f"[GetProjectsByJWT] account: {account}, Group: {group}, Role: {role}")
+
+        # 4. 获取所有项目
+        try:
+            all_projects = self.proxied_registry.list_projects(
+                allow_cache=request.allow_cache
+            )
+        except Exception as e:
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details(f"LIST_PROJECTS_ERROR: {str(e)}")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        # 5. 按 group 过滤
+        filtered_projects = [p for p in all_projects if p.group == group]
+
+        print(f"[GetProjectsByJWT] Total: {len(all_projects)}, Filtered: {len(filtered_projects)}")
+
+        # 6. 应用权限检查
+        try:
+            permitted_projects = permitted_resources(
+                resources=cast(list[FeastObject], filtered_projects),
+                actions=AuthzedAction.DESCRIBE,
+            )
+        except Exception as e:
+            print(f"[GetProjectsByJWT] Permission check failed: {e}")
+            permitted_projects = filtered_projects
+
+        # 7. 返回
+        return RegistryServer_pb2.ListProjectsResponse(
+            projects=[project.to_proto() for project in permitted_projects],
+        )
+
     def DeleteProject(self, request: RegistryServer_pb2.DeleteProjectRequest, context):
         project = self.proxied_registry.get_project(
             name=request.name, allow_cache=False
