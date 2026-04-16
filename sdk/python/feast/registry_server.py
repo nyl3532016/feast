@@ -1066,16 +1066,27 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
             context.set_details(f"JWT_DECODE_ERROR: {str(e)}")
             return RegistryServer_pb2.ListProjectsResponse()
 
-        # 3. 获取 group
+        # 3. 获取 业务字段
         group = payload.get("group", "")
         account = payload.get("account", "")
         role = payload.get("role", "")
-        if not all([group, account, role]):
+
+        if not group:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details("JWT_NO_GROUP: No group found in token payload")
             return RegistryServer_pb2.ListProjectsResponse()
 
-        print(f"[GetProjectsByJWT] account: {account}, Group: {group}, Role: {role}")
+        if not account:
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details("JWT_NO_ACCOUNT: No account found in token payload")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        if not role:
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details("JWT_NO_ROLE: No role found in token payload")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        logger.info(f"[GetProjectsByJWT] account: {account}, Group: {group}, Role: {role}")
 
         # 4. 获取所有项目
         try:
@@ -1090,7 +1101,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         # 5. 按 group 过滤
         filtered_projects = [p for p in all_projects if p.group == group]
 
-        print(f"[GetProjectsByJWT] Total: {len(all_projects)}, Filtered: {len(filtered_projects)}")
+        logger.info(f"[GetProjectsByJWT] Total: {len(all_projects)}, Filtered: {len(filtered_projects)}")
 
         # 6. 应用权限检查
         try:
@@ -1099,7 +1110,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 actions=AuthzedAction.DESCRIBE,
             )
         except Exception as e:
-            print(f"[GetProjectsByJWT] Permission check failed: {e}")
+            logger.info(f"[GetProjectsByJWT] Permission check failed: {e}")
             permitted_projects = filtered_projects
 
         # 7. 返回

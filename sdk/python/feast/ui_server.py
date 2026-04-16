@@ -1,13 +1,10 @@
 import json
-import os
 import threading
-from datetime import datetime, timedelta
 from importlib import resources as importlib_resources
 from typing import Callable, Optional, Tuple
 
-import jwt
 import uvicorn
-from fastapi import FastAPI, Form, Query, Request, Response, status, HTTPException
+from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -30,7 +27,8 @@ SSO_ERROR_CODES = {
     "JWT_SIGNATURE_INVALID": ("2002", "Token signature verification failed"),
     "JWT_TOKEN_EXPIRED": ("2003", "Token has expired"),
     "JWT_NO_GROUP": ("2004", "Missing required parameter: group"),
-    "JWT_NO_USER": ("2004", "Missing required parameter: user"),
+    "JWT_NO_ACCOUNT": ("2004", "Missing required parameter: user"),
+    "JWT_NO_ROLE": ("2004", "Missing required parameter: role"),
     "INTERNAL_ERROR": ("2005", "Internal system error"),
     "UNKNOWN_ERROR": ("2999", "Unknown error"),
     "LOCAL_MODE_NOT_SUPPORTED": ("2005", "SSO only supported in registry remote mode"),
@@ -51,7 +49,7 @@ def parse_sso_error(error_msg: str) -> Tuple[str, str]:
         return SSO_ERROR_CODES["UNKNOWN_ERROR"]
 
     # 按优先级匹配错误标识
-    if "JWT_TOKEN_EMPTY" in error_msg or "InvalidTokenError" in error_msg:
+    if "JWT_TOKEN_EMPTY" in error_msg:
         return SSO_ERROR_CODES["JWT_TOKEN_EMPTY"]
     elif "JWT_SIGNATURE_INVALID" in error_msg or "signature" in error_msg.lower():
         return SSO_ERROR_CODES["JWT_SIGNATURE_INVALID"]
@@ -59,8 +57,10 @@ def parse_sso_error(error_msg: str) -> Tuple[str, str]:
         return SSO_ERROR_CODES["JWT_TOKEN_EXPIRED"]
     elif "JWT_NO_GROUP" in error_msg:
         return SSO_ERROR_CODES["JWT_NO_GROUP"]
-    elif "JWT_NO_USER" in error_msg:
-        return SSO_ERROR_CODES["JWT_NO_USER"]
+    elif "JWT_NO_ACCOUNT" in error_msg:
+        return SSO_ERROR_CODES["JWT_NO_ACCOUNT"]
+    elif "JWT_NO_ROLE" in error_msg:
+        return SSO_ERROR_CODES["JWT_NO_ROLE"]
     elif "JWT_TOKEN_INVALID" in error_msg:
         return SSO_ERROR_CODES["JWT_TOKEN_INVALID"]
     elif "INTERNAL" in error_msg or "internal" in error_msg.lower():

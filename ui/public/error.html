@@ -117,14 +117,14 @@
             '2001': 'Invalid token or parsing failed. Please check your token.',
             '2002': 'Token signature verification failed. Please check your secret key.',
             '2003': 'Your session has expired. Please log in again.',
-            '2004': 'Missing required parameter in token (user/group). Please contact administrator.',
+            '2004': 'Missing required parameter in token (user/group/role). Please contact administrator.',
             '2005': 'Internal system error. Please try again later.',
             '2999': 'An unexpected error occurred. Please try again later.'
         };
 
         // Display error information
         const errorCode = getUrlParam('error_code') || '2999';
-        const errorMsg = getUrlParam('error_msg') || errorMessages[errorCode] || errorMessages['99999'];
+        const errorMsg = getUrlParam('error_msg') || errorMessages[errorCode];
 
         document.getElementById('errorCode').textContent = `Error Code: ${errorCode}`;
         document.getElementById('errorMessage').textContent = errorMsg;
