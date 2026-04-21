@@ -1040,18 +1040,26 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         JWT_SECRET = os.getenv("JWT_SECRET", "123456789")
         JWT_ALGORITHM = "HS256"
 
-        # 1. 检查 JWT 是否为空
-        if not request.jwt_token:
+        # 1. 从 metadata (header) 读取 authorization
+        metadata = dict(context.invocation_metadata())
+        auth_header = metadata.get('authorization', '')
+
+        jwt_token = None
+        if auth_header.startswith('Bearer '):
+            jwt_token = auth_header.split(' ', 1)[1]
+
+        # 2. 检查 JWT 是否为空
+        if not jwt_token:
             context.set_code(grpc.StatusCode.UNAUTHENTICATED)
             context.set_details("JWT_TOKEN_EMPTY: Missing authentication token")
             return RegistryServer_pb2.ListProjectsResponse()
 
-        # 2. 解析 JWT
+        # 3. 解析 JWT
         try:
             import jwt
 
             payload = jwt.decode(
-                request.jwt_token, JWT_SECRET, algorithms=[JWT_ALGORITHM]
+                jwt_token, JWT_SECRET, algorithms=[JWT_ALGORITHM]
             )
         except jwt.ExpiredSignatureError:
             context.set_code(grpc.StatusCode.UNAUTHENTICATED)

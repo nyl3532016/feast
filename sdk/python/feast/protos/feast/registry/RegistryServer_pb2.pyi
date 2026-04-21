@@ -1739,21 +1739,18 @@ Global___DeleteProjectRequest: _TypeAlias = DeleteProjectRequest  # noqa: Y015
 
 @_typing.final
 class GetProjectsByJWTRequest(_message.Message):
-    """SSO 请求：传递 JWT，服务端解析获取 group"""
+    """SSO 请求：服务端解析header获取 jwt"""
 
     DESCRIPTOR: _descriptor.Descriptor
 
-    JWT_TOKEN_FIELD_NUMBER: _builtins.int
     ALLOW_CACHE_FIELD_NUMBER: _builtins.int
-    jwt_token: _builtins.str
     allow_cache: _builtins.bool
     def __init__(
         self,
         *,
-        jwt_token: _builtins.str = ...,
         allow_cache: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "jwt_token", b"jwt_token"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___GetProjectsByJWTRequest: _TypeAlias = GetProjectsByJWTRequest  # noqa: Y015

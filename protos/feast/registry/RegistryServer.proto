@@ -493,10 +493,9 @@ message DeleteProjectRequest {
   bool commit = 2;
 }
 
-// SSO 请求：传递 JWT，服务端解析获取 group
+// SSO 请求：服务端解析header获取 jwt
 message GetProjectsByJWTRequest {
-  string jwt_token = 1;
-  bool allow_cache = 2;
+  bool allow_cache = 1;
 }
 
 // Lineage

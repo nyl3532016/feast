@@ -1,3 +1,4 @@
+import logging
 import json
 import threading
 from importlib import resources as importlib_resources
@@ -12,6 +13,7 @@ from feast.infra.registry.remote import RemoteRegistry
 import feast
 import traceback
 
+logger = logging.getLogger(__name__)
 
 # ==================== SSO 错误码规范 ====================
 # 2001: 无效token、token解析失败
@@ -165,7 +167,7 @@ def get_app(
         """
         try:
             token = request.headers.get("dacp-token")
-
+            logger.info("token = " + token)
             # Registry Server 验证 JWT（通过调用 GetProjectsByJWT）
             if isinstance(store.registry, RemoteRegistry):
                 from typing import cast
@@ -178,7 +180,7 @@ def get_app(
                         allow_cache=True,
                     )
                     # 如果成功返回 projects，说明 JWT 有效
-                    print(f"JWT verified by Registry Server, found {len(projects)} projects")
+                    logger.info(f"JWT verified by Registry Server, found {len(projects)} projects")
                 except Exception as e:
                     error_msg = str(e)
                     # 使用统一的错误码解析
@@ -257,7 +259,7 @@ def get_app(
                     )
                 except Exception as e:
                     error_msg = str(e)
-                    print(f"[projects-list] JWT error: {error_msg}")
+                    logger.info(f"[projects-list] JWT error: {error_msg}")
 
                     # 使用统一的错误码解析
                     error_code, error_detail = parse_sso_error(error_msg)
@@ -286,7 +288,7 @@ def get_app(
                         "registryPath": f"{root_path}/registry",
                     })
 
-                print(f"[projects-list] Returned {len(project_list)} projects from Registry Server")
+                logger.info(f"[projects-list] Returned {len(project_list)} projects from Registry Server")
                 return {"projects": project_list}
             else:
                 return JSONResponse(
@@ -295,8 +297,8 @@ def get_app(
                 )
 
         except Exception as e:
-            print(f"Error getting projects list: {e}")
-            print(traceback.format_exc())
+            logger.info(f"Error getting projects list: {e}")
+            logger.info(traceback.format_exc())
             return JSONResponse(
                 status_code=500,
                 content={"error": str(e), "error_code": "2005", "projects": []}
@@ -310,7 +312,7 @@ def get_app(
                 content={"error": "Registry not available", "error_code": "UNAVAILABLE"}
             )
 
-        # print(f"原始register = {registry_proto}")
+        # logger.info(f"原始register = {registry_proto}")
 
         # 从 Cookie 获取 JWT
         jwt_token = request.cookies.get("dacp-token")
@@ -338,7 +340,7 @@ def get_app(
                         jwt_token=jwt_token,
                         allow_cache=True,
                     )
-                    print(f"Got {len(projects)} projects from Registry Server")
+                    logger.info(f"Got {len(projects)} projects from Registry Server")
                 except Exception as e:
                     error_msg = str(e)
                     # 使用统一的错误码解析
@@ -357,7 +359,7 @@ def get_app(
 
             # 获取该 group 下的项目名称集合
             allowed_project_names = {p.name for p in projects}
-            print(f"Allowed projects for group '{group}': {allowed_project_names}")
+            logger.info(f"Allowed projects for group '{group}': {allowed_project_names}")
 
             # 创建新的 Registry proto，只包含该 group 的数据
             from feast.protos.feast.core.Registry_pb2 import Registry as RegistryProto
@@ -433,14 +435,14 @@ def get_app(
             if registry_proto.HasField('infra'):
                 filtered_registry.infra.CopyFrom(registry_proto.infra)
 
-            print(f"Filtered registry: {len(filtered_registry.projects)} projects, "
+            logger.info(f"Filtered registry: {len(filtered_registry.projects)} projects, "
                   f"{len(filtered_registry.entities)} entities, "
                   f"{len(filtered_registry.feature_views)} feature_views"
                   f"{len(filtered_registry.on_demand_feature_views)} on_demand_feature_views"
                   f"{len(filtered_registry.feature_services)} on_demand_feature_views"
                   )
 
-            # print(f"过滤后register  = {filtered_registry}")
+            # logger.info(f"过滤后register  = {filtered_registry}")
             return Response(
                 content=filtered_registry.SerializeToString(),
                 media_type="application/octet-stream",
@@ -448,8 +450,8 @@ def get_app(
 
         except Exception as e:
             import traceback
-            print(f"Error in read_registry: {e}")
-            print(traceback.format_exc())
+            logger.info(f"Error in read_registry: {e}")
+            logger.info(traceback.format_exc())
             error_code, _ = parse_sso_error(str(e))
             return JSONResponse(
                 status_code=500,

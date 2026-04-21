@@ -589,7 +589,6 @@ class RemoteRegistry(BaseRegistry):
         根据 JWT Token 获取项目列表（Registry Server 解析 JWT 并过滤）
 
         Args:
-            jwt_token: JWT Token 字符串
             allow_cache: 是否允许使用缓存
 
         Returns:
@@ -601,12 +600,16 @@ class RemoteRegistry(BaseRegistry):
         import grpc
 
         request = RegistryServer_pb2.GetProjectsByJWTRequest(
-            jwt_token=jwt_token,
             allow_cache=allow_cache,
         )
 
+        # 显式添加 authorization header，供 Server 拦截器认证
+        metadata = (
+            ("authorization", f"Bearer {jwt_token}"),
+        )
+
         try:
-            response = self.stub.GetProjectsByJWT(request)
+            response = self.stub.GetProjectsByJWT(request, metadata=metadata)
             return [Project.from_proto(project) for project in response.projects]
         except grpc.RpcError as e:
             # 捕获 gRPC 错误，抛出包含错误码和详细信息的异常
