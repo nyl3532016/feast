@@ -1111,19 +1111,19 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
 
         logger.info(f"[GetProjectsByJWT] Total: {len(all_projects)}, Filtered: {len(filtered_projects)}")
 
-        # 6. 应用权限检查
-        try:
-            permitted_projects = permitted_resources(
-                resources=cast(list[FeastObject], filtered_projects),
-                actions=AuthzedAction.DESCRIBE,
-            )
-        except Exception as e:
-            logger.info(f"[GetProjectsByJWT] Permission check failed: {e}")
-            permitted_projects = filtered_projects
+        # # 6. ui 不需要权限校验
+        # try:
+        #     permitted_projects = permitted_resources(
+        #         resources=cast(list[FeastObject], filtered_projects),
+        #         actions=AuthzedAction.DESCRIBE,
+        #     )
+        # except Exception as e:
+        #     logger.info(f"[GetProjectsByJWT] Permission check failed: {e}")
+        #     permitted_projects = filtered_projects
 
-        # 7. 返回
+        # 6. 返回
         return RegistryServer_pb2.ListProjectsResponse(
-            projects=[project.to_proto() for project in permitted_projects],
+            projects=[project.to_proto() for project in filtered_projects],
         )
 
     def DeleteProject(self, request: RegistryServer_pb2.DeleteProjectRequest, context):
