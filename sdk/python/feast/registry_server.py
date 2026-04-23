@@ -25,6 +25,7 @@ from feast.permissions.security_manager import (
     assert_permissions,
     assert_permissions_to_update,
     permitted_resources,
+    get_security_manager,
 )
 from feast.permissions.server.grpc import AuthInterceptor
 from feast.permissions.server.utils import (
@@ -1034,67 +1035,22 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
     def GetProjectsByJWT(
         self, request: RegistryServer_pb2.GetProjectsByJWTRequest, context
     ):
-        import os
-        import grpc
 
-        JWT_SECRET = os.getenv("JWT_SECRET", "123456789")
-        JWT_ALGORITHM = "HS256"
-
-        # 1. 从 metadata (header) 读取 authorization
-        metadata = dict(context.invocation_metadata())
-        auth_header = metadata.get('authorization', '')
-
-        jwt_token = None
-        if auth_header.startswith('Bearer '):
-            jwt_token = auth_header.split(' ', 1)[1]
+        sm = get_security_manager()
+        group = sm.current_user.cur_group
 
         # 2. 检查 JWT 是否为空
-        if not jwt_token:
+        if not sm:
             context.set_code(grpc.StatusCode.UNAUTHENTICATED)
             context.set_details("JWT_TOKEN_EMPTY: Missing authentication token")
             return RegistryServer_pb2.ListProjectsResponse()
-
-        # 3. 解析 JWT
-        try:
-            import jwt
-
-            payload = jwt.decode(
-                jwt_token, JWT_SECRET, algorithms=[JWT_ALGORITHM]
-            )
-        except jwt.ExpiredSignatureError:
-            context.set_code(grpc.StatusCode.UNAUTHENTICATED)
-            context.set_details("JWT_TOKEN_EXPIRED: Token has expired")
-            return RegistryServer_pb2.ListProjectsResponse()
-        except jwt.InvalidTokenError as e:
-            context.set_code(grpc.StatusCode.UNAUTHENTICATED)
-            context.set_details(f"JWT_TOKEN_INVALID: {str(e)}")
-            return RegistryServer_pb2.ListProjectsResponse()
-        except Exception as e:
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details(f"JWT_DECODE_ERROR: {str(e)}")
-            return RegistryServer_pb2.ListProjectsResponse()
-
-        # 3. 获取 业务字段
-        group = payload.get("group", "")
-        account = payload.get("account", "")
-        role = payload.get("role", "")
 
         if not group:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details("JWT_NO_GROUP: No group found in token payload")
             return RegistryServer_pb2.ListProjectsResponse()
 
-        if not account:
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            context.set_details("JWT_NO_ACCOUNT: No account found in token payload")
-            return RegistryServer_pb2.ListProjectsResponse()
-
-        if not role:
-            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            context.set_details("JWT_NO_ROLE: No role found in token payload")
-            return RegistryServer_pb2.ListProjectsResponse()
-
-        logger.info(f"[GetProjectsByJWT] account: {account}, Group: {group}, Role: {role}")
+        logger.info(f"[GetProjectsByJWT] Group: {group}")
 
         # 4. 获取所有项目
         try:
