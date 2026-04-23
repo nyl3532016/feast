@@ -1036,6 +1036,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         self, request: RegistryServer_pb2.GetProjectsByJWTRequest, context
     ):
 
+        # 1. 从全局变量获取当前用户组
         sm = get_security_manager()
         group = sm.current_user.cur_group
 
@@ -1052,7 +1053,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
 
         logger.info(f"[GetProjectsByJWT] Group: {group}")
 
-        # 4. 获取所有项目
+        # 3. 获取所有项目
         try:
             all_projects = self.proxied_registry.list_projects(
                 allow_cache=request.allow_cache
@@ -1062,12 +1063,12 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
             context.set_details(f"LIST_PROJECTS_ERROR: {str(e)}")
             return RegistryServer_pb2.ListProjectsResponse()
 
-        # 5. 按 group 过滤
+        # 4. 按 group 过滤
         filtered_projects = [p for p in all_projects if p.group == group]
 
         logger.info(f"[GetProjectsByJWT] Total: {len(all_projects)}, Filtered: {len(filtered_projects)}")
 
-        # # 6. ui 不需要权限校验
+        # # 5. ui 不需要权限校验
         # try:
         #     permitted_projects = permitted_resources(
         #         resources=cast(list[FeastObject], filtered_projects),

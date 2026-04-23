@@ -9,7 +9,7 @@ class User:
     _roles: Optional[list[str]]
     _groups: Optional[list[str]]
     _namespaces: Optional[list[str]]
-    _cur_group: Optional[str]   # 👈 新增
+    _cur_group: Optional[str]
 
     def __init__(
         self,
@@ -42,10 +42,10 @@ class User:
         return self._namespaces
 
     @property
-    def cur_group(self):   # 👈 新增 getter
+    def cur_group(self):
         return self._cur_group
 
-    @cur_group.setter       # 👈 可选：允许修改
+    @cur_group.setter
     def cur_group(self, value: str):
         self._cur_group = value
 
