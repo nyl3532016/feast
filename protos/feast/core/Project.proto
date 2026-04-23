@@ -42,6 +42,9 @@ message ProjectSpec {
 
     // Owner of the Project
     string owner = 4;
+
+    // Group of the Project (for multi-tenant scenarios)
+    string group = 5;
 }
 
 message ProjectMeta {

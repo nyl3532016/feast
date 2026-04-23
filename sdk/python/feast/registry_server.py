@@ -25,6 +25,7 @@ from feast.permissions.security_manager import (
     assert_permissions,
     assert_permissions_to_update,
     permitted_resources,
+    get_security_manager,
 )
 from feast.permissions.server.grpc import AuthInterceptor
 from feast.permissions.server.utils import (
@@ -1029,6 +1030,57 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         return RegistryServer_pb2.ListProjectsResponse(
             projects=[project.to_proto() for project in paginated_projects],
             pagination=pagination_metadata,
+        )
+
+    def GetProjectsByJWT(
+        self, request: RegistryServer_pb2.GetProjectsByJWTRequest, context
+    ):
+
+        # 1. 从全局变量获取当前用户组
+        sm = get_security_manager()
+        group = sm.current_user.cur_group
+
+        # 2. 检查 JWT 是否为空
+        if not sm:
+            context.set_code(grpc.StatusCode.UNAUTHENTICATED)
+            context.set_details("JWT_TOKEN_EMPTY: Missing authentication token")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        if not group:
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details("JWT_NO_GROUP: No group found in token payload")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        logger.info(f"[GetProjectsByJWT] Group: {group}")
+
+        # 3. 获取所有项目
+        try:
+            all_projects = self.proxied_registry.list_projects(
+                allow_cache=request.allow_cache
+            )
+        except Exception as e:
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details(f"LIST_PROJECTS_ERROR: {str(e)}")
+            return RegistryServer_pb2.ListProjectsResponse()
+
+        # 4. 按 group 过滤
+        filtered_projects = [p for p in all_projects if p.group == group]
+
+        logger.info(f"[GetProjectsByJWT] Total: {len(all_projects)}, Filtered: {len(filtered_projects)}")
+
+        # # 5. ui 不需要权限校验
+        # try:
+        #     permitted_projects = permitted_resources(
+        #         resources=cast(list[FeastObject], filtered_projects),
+        #         actions=AuthzedAction.DESCRIBE,
+        #     )
+        # except Exception as e:
+        #     logger.info(f"[GetProjectsByJWT] Permission check failed: {e}")
+        #     permitted_projects = filtered_projects
+
+        # 6. 返回
+        return RegistryServer_pb2.ListProjectsResponse(
+            projects=[project.to_proto() for project in filtered_projects],
         )
 
     def DeleteProject(self, request: RegistryServer_pb2.DeleteProjectRequest, context):
