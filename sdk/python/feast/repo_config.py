@@ -110,13 +110,14 @@ FEATURE_SERVER_CONFIG_CLASS_FOR_TYPE = {
     "mcp": "feast.infra.mcp_servers.mcp_config.McpFeatureServerConfig",
 }
 
-ALLOWED_AUTH_TYPES = ["no_auth", "kubernetes", "oidc"]
+ALLOWED_AUTH_TYPES = ["no_auth", "kubernetes", "oidc", "dacp"]
 
 AUTH_CONFIGS_CLASS_FOR_TYPE = {
     "no_auth": "feast.permissions.auth_model.NoAuthConfig",
     "kubernetes": "feast.permissions.auth_model.KubernetesAuthConfig",
     "oidc": "feast.permissions.auth_model.OidcAuthConfig",
     "oidc_client": "feast.permissions.auth_model.OidcClientAuthConfig",
+    "dacp": "feast.permissions.auth_model.DacpAuthConfig",
 }
 
 
@@ -400,9 +401,9 @@ class RepoConfig(FeastBaseModel):
     def auth_config(self):
         if not self._auth:
             if isinstance(self.auth, Dict):
-                # treat this auth block as *client-side* OIDC when it matches
+                # treat this auth block as *ui_server-side* OIDC when it matches
                 #   1)  ROPG            – username + password + client_secret
-                #   2)  client-credentials – client_secret only
+                #   2)  ui_server-credentials – client_secret only
                 #   3)  static token    – token
                 is_oidc_client = self.auth.get("type") == AuthType.OIDC.value and (
                     (

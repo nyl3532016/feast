@@ -9,3 +9,4 @@ class AuthType(enum.Enum):
     NONE = "no_auth"
     OIDC = "oidc"
     KUBERNETES = "kubernetes"
+    DACP = "dacp"

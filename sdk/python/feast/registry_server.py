@@ -198,6 +198,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def ListEntities(self, request: RegistryServer_pb2.ListEntitiesRequest, context):
@@ -212,6 +213,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                     ),
                 ),
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -228,6 +230,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 name=request.name, project=request.project
             ),
             actions=AuthzedAction.DELETE,
+            project=request.project,
         )
 
         self.proxied_registry.delete_entity(
@@ -262,6 +265,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=AuthzedAction.DESCRIBE,
+            project=request.project,
         ).to_proto()
 
     def ListDataSources(
@@ -278,6 +282,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                     ),
                 ),
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -299,6 +304,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 project=request.project,
             ),
             actions=AuthzedAction.DELETE,
+            project=request.project,
         )
 
         self.proxied_registry.delete_data_source(
@@ -316,6 +322,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def GetAnyFeatureView(
@@ -331,6 +338,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 ),
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         )
 
         return RegistryServer_pb2.GetAnyFeatureViewResponse(
@@ -383,6 +391,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                     ),
                 ),
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -463,6 +472,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                         assert_permissions(
                             resource=feature_service,
                             actions=AuthzedAction.DESCRIBE,
+                            project=request.project,
                         )
 
                         feature_service_match = False
@@ -516,6 +526,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
             permitted_resources(
                 resources=all_feature_views,
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -546,6 +557,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=feature_view,
             actions=[AuthzedAction.DELETE],
+            project=request.project,
         )
         self.proxied_registry.delete_feature_view(
             name=request.name, project=request.project, commit=request.commit
@@ -562,6 +574,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def ListStreamFeatureViews(
@@ -579,6 +592,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                         ),
                     ),
                     actions=AuthzedAction.DESCRIBE,
+                    project=request.project,
                 ),
                 pagination=request.pagination,
                 sorting=request.sorting,
@@ -603,6 +617,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def ListOnDemandFeatureViews(
@@ -620,6 +635,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                         ),
                     ),
                     actions=AuthzedAction.DESCRIBE,
+                    project=request.project,
                 ),
                 pagination=request.pagination,
                 sorting=request.sorting,
@@ -662,6 +678,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 project=request.project,
                 allow_cache=request.allow_cache,
             ),
+            project=request.project,
             actions=[AuthzedAction.DESCRIBE],
         ).to_proto()
 
@@ -696,6 +713,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
             permitted_resources(
                 resources=cast(list[FeastObject], all_feature_services),
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -718,6 +736,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=feature_service,
             actions=[AuthzedAction.DELETE],
+            project=request.project,
         )
         self.proxied_registry.delete_feature_service(
             name=request.name, project=request.project, commit=request.commit
@@ -753,6 +772,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def ListSavedDatasets(
@@ -769,6 +789,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                     ),
                 ),
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -790,6 +811,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=saved_dataset,
             actions=[AuthzedAction.DELETE],
+            project=request.project,
         )
         self.proxied_registry.delete_saved_dataset(
             name=request.name, project=request.project, commit=request.commit
@@ -826,6 +848,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def ListValidationReferences(
@@ -843,6 +866,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                         ),
                     ),
                     actions=AuthzedAction.DESCRIBE,
+                    project=request.project,
                 ),
                 pagination=request.pagination,
                 sorting=request.sorting,
@@ -866,6 +890,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=validation_reference,
             actions=[AuthzedAction.DELETE],
+            project=request.project,
         )
         self.proxied_registry.delete_validation_reference(
             name=request.name, project=request.project, commit=request.commit
@@ -890,6 +915,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=FeatureView.from_proto(request.feature_view),
             actions=[AuthzedAction.WRITE_ONLINE],
+            project=request.project,
         )
 
         self.proxied_registry.apply_materialization(
@@ -945,6 +971,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def ListPermissions(
@@ -961,6 +988,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                     ),
                 ),
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -980,6 +1008,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=permission,
             actions=[AuthzedAction.DELETE],
+            project=request.project,
         )
         self.proxied_registry.delete_permission(
             name=request.name, project=request.project, commit=request.commit
@@ -1009,6 +1038,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
+            project=request.project,
         ).to_proto()
 
     def ListProjects(self, request: RegistryServer_pb2.ListProjectsRequest, context):
@@ -1022,6 +1052,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                     ),
                 ),
                 actions=AuthzedAction.DESCRIBE,
+                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -1090,6 +1121,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=project,
             actions=[AuthzedAction.DELETE],
+            project=request.project,
         )
         self.proxied_registry.delete_project(name=request.name, commit=request.commit)
 
@@ -1178,6 +1210,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         permitted_fvs = permitted_resources(
             resources=cast(list[FeastObject], feature_views),
             actions=AuthzedAction.DESCRIBE,
+            project=request.project,
         )
         features = []
         for fv in permitted_fvs:
@@ -1236,6 +1269,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         permitted_fvs = permitted_resources(
             resources=cast(list[FeastObject], feature_views),
             actions=AuthzedAction.DESCRIBE,
+            project=request.project,
         )
         for fv in permitted_fvs:
             fv_name = getattr(fv, "name", None)

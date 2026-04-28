@@ -17,7 +17,7 @@ from feast.repo_config import FeastConfigBaseModel
 
 
 class AuthConfig(FeastConfigBaseModel):
-    type: Literal["oidc", "kubernetes", "no_auth"] = "no_auth"
+    type: Literal["oidc", "kubernetes", "dacp", "no_auth"] = "no_auth"
 
 
 class OidcAuthConfig(AuthConfig):
@@ -69,3 +69,20 @@ class KubernetesAuthConfig(AuthConfig):
     user_token: Optional[str] = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True, extra="allow")
+
+
+class DacpAuthConfig(AuthConfig):
+    """
+    DACP authentication configuration.
+
+    Uses environment variables to generate JWT tokens:
+    - DACP_USER_NAME: User name
+    - DACP_GROUP_NAME: Group name
+    - DACP_ROLE: Role
+    """
+
+    type: Literal["dacp"] = "dacp"
+    # Optional custom environment variable names
+    user_name_env: Optional[str] = "DACP_USER_NAME"
+    group_name_env: Optional[str] = "DACP_GROUP_NAME"
+    role_env: Optional[str] = "DACP_ROLE"

@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from feast.permissions.auth.auth_type import AuthType
 from feast.permissions.auth_model import (
     AuthConfig,
+    DacpAuthConfig,
     KubernetesAuthConfig,
     OidcClientAuthConfig,
 )
@@ -21,6 +22,9 @@ class AuthenticationClientManagerFactory(ABC):
         self.auth_config = auth_config
 
     def get_auth_client_manager(self) -> AuthenticationClientManager:
+        from feast.permissions.client.dacp_authentication_client_manager import (
+            DacpAuthClientManager,
+        )
         from feast.permissions.client.intra_comm_authentication_client_manager import (
             IntraCommAuthClientManager,
         )
@@ -43,6 +47,9 @@ class AuthenticationClientManagerFactory(ABC):
         elif self.auth_config.type == AuthType.KUBERNETES.value:
             assert isinstance(self.auth_config, KubernetesAuthConfig)
             return KubernetesAuthClientManager(self.auth_config)
+        elif self.auth_config.type == AuthType.DACP.value:
+            assert isinstance(self.auth_config, DacpAuthConfig)
+            return DacpAuthClientManager(self.auth_config)
         else:
             raise RuntimeError(
                 f"No Auth client manager implemented for the auth type:${self.auth_config.type}"
