@@ -67,17 +67,13 @@ def _check_group_match(
                         resource_group=project_obj.group,
                         resource=f"project:{project}"
                     )
-                logger.info(f"当前配置文件的项目对应group:{project_obj.group}， dacp用户对应的group:{user.cur_group}")
+                logger.info(f"The project's group in the current configuration is: {project_obj.group}, and the user's DACP group is: {user.cur_group}")
                 return  # 校验通过
             else:
                 raise FeastPermissionError(f"Project '{project}' not found in registry")
-        except FeastGroupMismatchError:
+        except Exception:
+            logger.error(f"Failed to get project {project} for group check")
             raise
-        except FeastPermissionError:
-            raise
-        except Exception as e:
-            logger.error(f"Failed to get project {project} for group check: {e}")
-
     # # 如果没有 project 参数，检查资源本身的 group（适用于 Project 类型）
     # for resource in resources:
     #     resource_group = getattr(resource, "group", None)
@@ -139,7 +135,7 @@ class SecurityManager:
         Returns:
             list[Permission]: the list of `Permission` for the given project.
         """
-        logger.info(f"get_permissions_for_project project = {project}")
+        logger.debug(f"get_permissions_for_project project = {project}")
         return self._registry.list_permissions(project=project)
 
     def assert_permissions(
@@ -269,9 +265,6 @@ def assert_permissions(
     if not is_auth_necessary(sm):
         return resource
 
-    # 新增：Group 匹配检查
-    _check_group_match(sm.current_user, [resource], sm._registry, project)
-
     return sm.assert_permissions(  # type: ignore[union-attr]
         resources=[resource], actions=actions, filter_only=False, project=project
     )[0]
@@ -317,9 +310,6 @@ def permitted_resources(
                 "Security manager exists but no user context - denying access to all resources"
             )
             return []
-
-    # 新增：Group 匹配检查
-    _check_group_match(sm.current_user, resources, sm._registry, project)
 
     return sm.assert_permissions(resources=resources, actions=actions, filter_only=True, project=project)  # type: ignore[union-attr]
 

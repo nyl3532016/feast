@@ -1038,7 +1038,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                 allow_cache=request.allow_cache,
             ),
             actions=[AuthzedAction.DESCRIBE],
-            project=request.project,
+            project=request.name,
         ).to_proto()
 
     def ListProjects(self, request: RegistryServer_pb2.ListProjectsRequest, context):
@@ -1052,7 +1052,6 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
                     ),
                 ),
                 actions=AuthzedAction.DESCRIBE,
-                project=request.project,
             ),
             pagination=request.pagination,
             sorting=request.sorting,
@@ -1121,7 +1120,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         assert_permissions(
             resource=project,
             actions=[AuthzedAction.DELETE],
-            project=request.project,
+            project=request.name,
         )
         self.proxied_registry.delete_project(name=request.name, commit=request.commit)
 

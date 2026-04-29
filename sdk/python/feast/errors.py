@@ -547,7 +547,7 @@ class FeastPermissionError(FeastError, PermissionError):
 
 
 class FeastGroupMismatchError(FeastPermissionError):
-    """用户 group 与资源 group 不匹配"""
+    """User group does not match resource group."""
 
     def __init__(self, user_group: str, resource_group: str, resource: str):
         super().__init__(
