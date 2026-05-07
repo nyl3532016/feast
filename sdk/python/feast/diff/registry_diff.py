@@ -273,6 +273,10 @@ def diff_between(
     )
 
     for object_type in FEAST_OBJECT_TYPES:
+        # Skip Permission type - permissions are managed separately, not via feast apply
+        if object_type == FeastObjectType.PERMISSION:
+            continue
+
         objects_to_keep = objs_to_keep[object_type]
         objects_to_delete = objs_to_delete[object_type]
         objects_to_update = objs_to_update[object_type]
@@ -358,15 +362,15 @@ def apply_diff_to_registry(
                     project,
                     commit=False,
                 )
-            elif feast_object_diff.feast_object_type == FeastObjectType.PERMISSION:
-                permission_obj = cast(
-                    Permission, feast_object_diff.current_feast_object
-                )
-                registry.delete_permission(
-                    permission_obj.name,
-                    project,
-                    commit=False,
-                )
+            # elif feast_object_diff.feast_object_type == FeastObjectType.PERMISSION:
+            #     permission_obj = cast(
+            #         Permission, feast_object_diff.current_feast_object
+            #     )
+            #     registry.delete_permission(
+            #         permission_obj.name,
+            #         project,
+            #         commit=False,
+            #     )
 
         if feast_object_diff.transition_type in [
             TransitionType.CREATE,
@@ -405,12 +409,12 @@ def apply_diff_to_registry(
                     project,
                     commit=False,
                 )
-            elif feast_object_diff.feast_object_type == FeastObjectType.PERMISSION:
-                registry.apply_permission(
-                    cast(Permission, feast_object_diff.new_feast_object),
-                    project,
-                    commit=False,
-                )
+            # elif feast_object_diff.feast_object_type == FeastObjectType.PERMISSION:
+            #     registry.apply_permission(
+            #         cast(Permission, feast_object_diff.new_feast_object),
+            #         project,
+            #         commit=False,
+            #     )
 
     if commit:
         registry.commit()

@@ -74,15 +74,6 @@ def _check_group_match(
         except Exception:
             logger.error(f"Failed to get project {project} for group check")
             raise
-    # # 如果没有 project 参数，检查资源本身的 group（适用于 Project 类型）
-    # for resource in resources:
-    #     resource_group = getattr(resource, "group", None)
-    #     if resource_group and resource_group != user.cur_group:
-    #         raise FeastGroupMismatchError(
-    #             user_group=user.cur_group,
-    #             resource_group=resource_group,
-    #             resource=f"{type(resource).__name__}:{getattr(resource, 'name', 'unknown')}"
-    #         )
 
 
 class SecurityManager:
@@ -169,13 +160,9 @@ class SecurityManager:
         # 新增：Group 匹配检查
         _check_group_match(self.current_user, resources, self._registry, project)
 
-        permissions = (
-            self.get_permissions_for_project(project)
-            if project
-            else self.permissions
-        )
+
         return enforce_policy(
-            permissions=permissions,
+            permissions=self.get_permissions_for_project(project),
             user=self.current_user if self.current_user is not None else User("", []),
             resources=resources,
             actions=actions if isinstance(actions, list) else [actions],

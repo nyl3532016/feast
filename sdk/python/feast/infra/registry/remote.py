@@ -141,6 +141,19 @@ class RemoteRegistry(BaseRegistry):
         response = self.stub.ListEntities(request)
         return [Entity.from_proto(entity) for entity in response.entities]
 
+    def Inner_list_entities(
+        self,
+        project: str,
+        allow_cache: bool = False,
+        tags: Optional[dict[str, str]] = None,
+    ) -> List[Entity]:
+        """Inner version of list_entities without permission checks."""
+        request = RegistryServer_pb2.InnerListEntitiesRequest(
+            project=project, allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListEntities(request)
+        return [Entity.from_proto(entity) for entity in response.entities]
+
     def apply_data_source(
         self, data_source: DataSource, project: str, commit: bool = True
     ):
@@ -178,6 +191,21 @@ class RemoteRegistry(BaseRegistry):
             DataSource.from_proto(data_source) for data_source in response.data_sources
         ]
 
+    def Inner_list_data_sources(
+        self,
+        project: str,
+        allow_cache: bool = False,
+        tags: Optional[dict[str, str]] = None,
+    ) -> List[DataSource]:
+        """Inner version of list_data_sources without permission checks."""
+        request = RegistryServer_pb2.InnerListDataSourcesRequest(
+            project=project, allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListDataSources(request)
+        return [
+            DataSource.from_proto(data_source) for data_source in response.data_sources
+        ]
+
     def apply_feature_service(
         self, feature_service: FeatureService, project: str, commit: bool = True
     ):
@@ -211,6 +239,22 @@ class RemoteRegistry(BaseRegistry):
             project=project, allow_cache=allow_cache, tags=tags
         )
         response = self.stub.ListFeatureServices(request)
+        return [
+            FeatureService.from_proto(feature_service)
+            for feature_service in response.feature_services
+        ]
+
+    def Inner_list_feature_services(
+        self,
+        project: str,
+        allow_cache: bool = False,
+        tags: Optional[dict[str, str]] = None,
+    ) -> List[FeatureService]:
+        """Inner version of list_feature_services without permission checks."""
+        request = RegistryServer_pb2.InnerListFeatureServicesRequest(
+            project=project, allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListFeatureServices(request)
         return [
             FeatureService.from_proto(feature_service)
             for feature_service in response.feature_services
@@ -274,6 +318,22 @@ class RemoteRegistry(BaseRegistry):
             for stream_feature_view in response.stream_feature_views
         ]
 
+    def Inner_list_stream_feature_views(
+        self,
+        project: str,
+        allow_cache: bool = False,
+        tags: Optional[dict[str, str]] = None,
+    ) -> List[StreamFeatureView]:
+        """Inner version of list_stream_feature_views without permission checks."""
+        request = RegistryServer_pb2.InnerListStreamFeatureViewsRequest(
+            project=project, allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListStreamFeatureViews(request)
+        return [
+            StreamFeatureView.from_proto(stream_feature_view)
+            for stream_feature_view in response.stream_feature_views
+        ]
+
     def get_on_demand_feature_view(
         self, name: str, project: str, allow_cache: bool = False
     ) -> OnDemandFeatureView:
@@ -293,6 +353,22 @@ class RemoteRegistry(BaseRegistry):
             project=project, allow_cache=allow_cache, tags=tags
         )
         response = self.stub.ListOnDemandFeatureViews(request)
+        return [
+            OnDemandFeatureView.from_proto(on_demand_feature_view)
+            for on_demand_feature_view in response.on_demand_feature_views
+        ]
+
+    def Inner_list_on_demand_feature_views(
+        self,
+        project: str,
+        allow_cache: bool = False,
+        tags: Optional[dict[str, str]] = None,
+    ) -> List[OnDemandFeatureView]:
+        """Inner version of list_on_demand_feature_views without permission checks."""
+        request = RegistryServer_pb2.InnerListOnDemandFeatureViewsRequest(
+            project=project, allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListOnDemandFeatureViews(request)
         return [
             OnDemandFeatureView.from_proto(on_demand_feature_view)
             for on_demand_feature_view in response.on_demand_feature_views
@@ -349,6 +425,22 @@ class RemoteRegistry(BaseRegistry):
         )
         response = self.stub.ListFeatureViews(request)
 
+        return [
+            FeatureView.from_proto(feature_view)
+            for feature_view in response.feature_views
+        ]
+
+    def Inner_list_feature_views(
+        self,
+        project: str,
+        allow_cache: bool = False,
+        tags: Optional[dict[str, str]] = None,
+    ) -> List[FeatureView]:
+        """Inner version of list_feature_views without permission checks."""
+        request = RegistryServer_pb2.InnerListFeatureViewsRequest(
+            project=project, allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListFeatureViews(request)
         return [
             FeatureView.from_proto(feature_view)
             for feature_view in response.feature_views
@@ -537,6 +629,21 @@ class RemoteRegistry(BaseRegistry):
             Permission.from_proto(permission) for permission in response.permissions
         ]
 
+    def Inner_list_permissions(
+        self,
+        project: str,
+        allow_cache: bool = False,
+        tags: Optional[dict[str, str]] = None,
+    ) -> List[Permission]:
+        """Inner version of list_permissions without permission checks."""
+        request = RegistryServer_pb2.InnerListPermissionsRequest(
+            project=project, allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListPermissions(request)
+        return [
+            Permission.from_proto(permission) for permission in response.permissions
+        ]
+
     def apply_project(
         self,
         project: Project,
@@ -578,6 +685,17 @@ class RemoteRegistry(BaseRegistry):
             allow_cache=allow_cache, tags=tags
         )
         response = self.stub.ListProjects(request)
+        return [Project.from_proto(project) for project in response.projects]
+
+    def Inner_list_projects(
+            self,
+            allow_cache: bool = False,
+            tags: Optional[dict[str, str]] = None,
+    ) -> List[Project]:
+        request = RegistryServer_pb2.InnerListProjectsRequest(
+            allow_cache=allow_cache, tags=tags
+        )
+        response = self.stub.InnerListProjects(request)
         return [Project.from_proto(project) for project in response.projects]
 
     def get_projects_by_jwt(

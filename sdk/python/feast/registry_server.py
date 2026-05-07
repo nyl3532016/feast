@@ -13,14 +13,15 @@ from feast.base_feature_view import BaseFeatureView
 from feast.data_source import DataSource
 from feast.entity import Entity
 from feast.errors import FeastObjectNotFoundException, FeatureViewNotFoundException
-from feast.feast_object import FeastObject
+from feast.feast_object import ALL_RESOURCE_TYPES,FeastObject
 from feast.feature_view import FeatureView
 from feast.grpc_error_interceptor import ErrorInterceptor
 from feast.infra.infra_object import Infra
 from feast.infra.registry.base_registry import BaseRegistry
 from feast.on_demand_feature_view import OnDemandFeatureView
-from feast.permissions.action import AuthzedAction
+from feast.permissions.action import AuthzedAction, ALL_ACTIONS
 from feast.permissions.permission import Permission
+from feast.permissions.policy import RoleBasedPolicy
 from feast.permissions.security_manager import (
     assert_permissions,
     assert_permissions_to_update,
@@ -999,6 +1000,175 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
             pagination=pagination_metadata,
         )
 
+    def InnerListEntities(
+        self, request: RegistryServer_pb2.InnerListEntitiesRequest, context
+    ):
+        """Inner version of ListEntities without permission checks."""
+        paginated_entities, pagination_metadata = apply_pagination_and_sorting(
+            self.proxied_registry.list_entities(
+                project=request.project,
+                allow_cache=request.allow_cache,
+                tags=dict(request.tags),
+            ),
+            pagination=request.pagination,
+            sorting=request.sorting,
+        )
+
+        return RegistryServer_pb2.InnerListEntitiesResponse(
+            entities=[entity.to_proto() for entity in paginated_entities],
+            pagination=pagination_metadata,
+        )
+
+    def InnerListDataSources(
+        self, request: RegistryServer_pb2.InnerListDataSourcesRequest, context
+    ):
+        """Inner version of ListDataSources without permission checks."""
+        paginated_data_sources, pagination_metadata = apply_pagination_and_sorting(
+            self.proxied_registry.list_data_sources(
+                project=request.project,
+                allow_cache=request.allow_cache,
+                tags=dict(request.tags),
+            ),
+            pagination=request.pagination,
+            sorting=request.sorting,
+        )
+
+        return RegistryServer_pb2.InnerListDataSourcesResponse(
+            data_sources=[
+                data_source.to_proto() for data_source in paginated_data_sources
+            ],
+            pagination=pagination_metadata,
+        )
+
+    def InnerListFeatureViews(
+        self, request: RegistryServer_pb2.InnerListFeatureViewsRequest, context
+    ):
+        """Inner version of ListFeatureViews without permission checks."""
+        paginated_feature_views, pagination_metadata = apply_pagination_and_sorting(
+            self.proxied_registry.list_feature_views(
+                project=request.project,
+                allow_cache=request.allow_cache,
+                tags=dict(request.tags),
+            ),
+            pagination=request.pagination,
+            sorting=request.sorting,
+        )
+
+        return RegistryServer_pb2.InnerListFeatureViewsResponse(
+            feature_views=[
+                feature_view.to_proto() for feature_view in paginated_feature_views
+            ],
+            pagination=pagination_metadata,
+        )
+
+    def InnerListStreamFeatureViews(
+        self, request: RegistryServer_pb2.InnerListStreamFeatureViewsRequest, context
+    ):
+        """Inner version of ListStreamFeatureViews without permission checks."""
+        paginated_stream_feature_views, pagination_metadata = (
+            apply_pagination_and_sorting(
+                self.proxied_registry.list_stream_feature_views(
+                    project=request.project,
+                    allow_cache=request.allow_cache,
+                    tags=dict(request.tags),
+                ),
+                pagination=request.pagination,
+                sorting=request.sorting,
+            )
+        )
+
+        return RegistryServer_pb2.InnerListStreamFeatureViewsResponse(
+            stream_feature_views=[
+                stream_feature_view.to_proto()
+                for stream_feature_view in paginated_stream_feature_views
+            ],
+            pagination=pagination_metadata,
+        )
+
+    def InnerListOnDemandFeatureViews(
+        self, request: RegistryServer_pb2.InnerListOnDemandFeatureViewsRequest, context
+    ):
+        """Inner version of ListOnDemandFeatureViews without permission checks."""
+        paginated_on_demand_feature_views, pagination_metadata = (
+            apply_pagination_and_sorting(
+                self.proxied_registry.list_on_demand_feature_views(
+                    project=request.project,
+                    allow_cache=request.allow_cache,
+                    tags=dict(request.tags),
+                ),
+                pagination=request.pagination,
+                sorting=request.sorting,
+            )
+        )
+
+        return RegistryServer_pb2.InnerListOnDemandFeatureViewsResponse(
+            on_demand_feature_views=[
+                on_demand_feature_view.to_proto()
+                for on_demand_feature_view in paginated_on_demand_feature_views
+            ],
+            pagination=pagination_metadata,
+        )
+
+    def InnerListFeatureServices(
+        self, request: RegistryServer_pb2.InnerListFeatureServicesRequest, context
+    ):
+        """Inner version of ListFeatureServices without permission checks."""
+        # Get all feature services first
+        all_feature_services = self.proxied_registry.list_feature_services(
+            project=request.project,
+            allow_cache=request.allow_cache,
+            tags=dict(request.tags),
+        )
+
+        # Filter by feature view if specified
+        if request.feature_view:
+            filtered_feature_services = []
+            for feature_service in all_feature_services:
+                feature_view_match = False
+                if hasattr(feature_service, "feature_view_projections"):
+                    for (
+                        feature_view_projection
+                    ) in feature_service.feature_view_projections:
+                        if feature_view_projection.name == request.feature_view:
+                            feature_view_match = True
+                            break
+                if feature_view_match:
+                    filtered_feature_services.append(feature_service)
+            all_feature_services = filtered_feature_services
+
+        paginated_feature_services, pagination_metadata = apply_pagination_and_sorting(
+            all_feature_services,
+            pagination=request.pagination,
+            sorting=request.sorting,
+        )
+
+        return RegistryServer_pb2.InnerListFeatureServicesResponse(
+            feature_services=[
+                feature_service.to_proto()
+                for feature_service in paginated_feature_services
+            ],
+            pagination=pagination_metadata,
+        )
+
+    def InnerListPermissions(
+        self, request: RegistryServer_pb2.InnerListPermissionsRequest, context
+    ):
+        """Inner version of ListPermissions without permission checks."""
+        paginated_permissions, pagination_metadata = apply_pagination_and_sorting(
+            self.proxied_registry.list_permissions(
+                project=request.project,
+                allow_cache=request.allow_cache,
+                tags=dict(request.tags),
+            ),
+            pagination=request.pagination,
+            sorting=request.sorting,
+        )
+
+        return RegistryServer_pb2.InnerListPermissionsResponse(
+            permissions=[permission.to_proto() for permission in paginated_permissions],
+            pagination=pagination_metadata,
+        )
+
     def DeletePermission(
         self, request: RegistryServer_pb2.DeletePermissionRequest, context
     ):
@@ -1016,19 +1186,50 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
 
         return Empty()
 
-    def ApplyProject(self, request: RegistryServer_pb2.ApplyProjectRequest, context):
-        project = cast(
-            Project,
-            assert_permissions_to_update(
-                resource=Project.from_proto(request.project),
-                getter=self.proxied_registry.get_project,
-                project=Project.from_proto(request.project).name,
-            ),
-        )
-        self.proxied_registry.apply_project(
-            project=project,
-            commit=request.commit,
-        )
+    def ApplyProject(self, request, context):
+        project = Project.from_proto(request.project)
+
+        # 1. 检查是否是新 project
+        try:
+            self.proxied_registry.get_project(project.name)
+        except FeastObjectNotFoundException:
+            # 2. 创建 project（跳过完整权限检查）
+            self.proxied_registry.apply_project(project, commit=False)
+
+            # 3. 创建默认 permission
+            # ========== 只读角色 ==========
+            reader_permission = Permission(
+                name="reader_role",
+                types=ALL_RESOURCE_TYPES,  # 所有资源类型
+                actions=[AuthzedAction.DESCRIBE],  # 只能查看
+                policy=RoleBasedPolicy(roles=["reader"])
+            )
+
+            # 4. ========== 读写角色（管理员） ==========
+            writer_permission = Permission(
+                name="writer_role",
+                types=ALL_RESOURCE_TYPES,  # 所有资源类型
+                actions=ALL_ACTIONS,  # 所有操作（增删改查 + 在线/离线读写）
+                policy=RoleBasedPolicy(roles=["writer"])
+            )
+            # 5. 应用到注册表
+            self.proxied_registry.apply_permission(reader_permission, project=project.name, commit=False)
+            self.proxied_registry.apply_permission(writer_permission, project=project.name, commit=False)
+            self.proxied_registry.commit()
+        else:
+            # 6. 现有 project：正常权限检查流程
+            project = cast(
+                Project,
+                assert_permissions_to_update(
+                    resource=Project.from_proto(request.project),
+                    getter=self.proxied_registry.get_project,
+                    project=Project.from_proto(request.project).name,
+                ),
+            )
+            self.proxied_registry.apply_project(
+                project=project,
+                commit=request.commit,
+            )
         return Empty()
 
     def GetProject(self, request: RegistryServer_pb2.GetProjectRequest, context):
@@ -1058,6 +1259,20 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
         )
 
         return RegistryServer_pb2.ListProjectsResponse(
+            projects=[project.to_proto() for project in paginated_projects],
+            pagination=pagination_metadata,
+        )
+    def InnerListProjects(self, request: RegistryServer_pb2.InnerListProjectsRequest, context):
+        paginated_projects, pagination_metadata = apply_pagination_and_sorting(
+            self.proxied_registry.list_projects(
+                allow_cache=request.allow_cache,
+                tags=dict(request.tags),
+            ),
+            pagination=request.pagination,
+            sorting=request.sorting,
+        )
+
+        return RegistryServer_pb2.InnerListProjectsResponse(
             projects=[project.to_proto() for project in paginated_projects],
             pagination=pagination_metadata,
         )
@@ -1098,17 +1313,7 @@ class RegistryServer(RegistryServer_pb2_grpc.RegistryServerServicer):
 
         logger.info(f"[GetProjectsByJWT] Total: {len(all_projects)}, Filtered: {len(filtered_projects)}")
 
-        # # 5. ui 不需要权限校验
-        # try:
-        #     permitted_projects = permitted_resources(
-        #         resources=cast(list[FeastObject], filtered_projects),
-        #         actions=AuthzedAction.DESCRIBE,
-        #     )
-        # except Exception as e:
-        #     logger.info(f"[GetProjectsByJWT] Permission check failed: {e}")
-        #     permitted_projects = filtered_projects
-
-        # 6. 返回
+        # 5. 返回
         return RegistryServer_pb2.ListProjectsResponse(
             projects=[project.to_proto() for project in filtered_projects],
         )

@@ -98,6 +98,18 @@ service RegistryServer{
 
   // SSO 接口：接收 JWT，解析并返回该用户组的项目
   rpc GetProjectsByJWT (GetProjectsByJWTRequest) returns (ListProjectsResponse) {}
+
+  // Inner ListProjects for internal use (with pagination support)
+  rpc InnerListProjects (InnerListProjectsRequest) returns (InnerListProjectsResponse) {}
+
+  // Inner List methods without permission checks
+  rpc InnerListEntities (InnerListEntitiesRequest) returns (InnerListEntitiesResponse) {}
+  rpc InnerListDataSources (InnerListDataSourcesRequest) returns (InnerListDataSourcesResponse) {}
+  rpc InnerListFeatureViews (InnerListFeatureViewsRequest) returns (InnerListFeatureViewsResponse) {}
+  rpc InnerListStreamFeatureViews (InnerListStreamFeatureViewsRequest) returns (InnerListStreamFeatureViewsResponse) {}
+  rpc InnerListOnDemandFeatureViews (InnerListOnDemandFeatureViewsRequest) returns (InnerListOnDemandFeatureViewsResponse) {}
+  rpc InnerListFeatureServices (InnerListFeatureServicesRequest) returns (InnerListFeatureServicesResponse) {}
+  rpc InnerListPermissions (InnerListPermissionsRequest) returns (InnerListPermissionsResponse) {}
 }
 
 // Common pagination and sorting messages
@@ -572,4 +584,116 @@ message GetFeatureRequest {
   string feature_view = 2;
   string name = 3;
   bool allow_cache = 4;
+}
+
+// Inner ListProjects messages for internal use
+message InnerListProjectsRequest {
+  bool allow_cache = 1;
+  map<string, string> tags = 2;
+  PaginationParams pagination = 3;
+  SortingParams sorting = 4;
+}
+
+message InnerListProjectsResponse {
+  repeated feast.core.Project projects = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Inner ListEntities messages
+message InnerListEntitiesRequest {
+  string project = 1;
+  bool allow_cache = 2;
+  map<string, string> tags = 3;
+  PaginationParams pagination = 4;
+  SortingParams sorting = 5;
+}
+
+message InnerListEntitiesResponse {
+  repeated feast.core.Entity entities = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Inner ListDataSources messages
+message InnerListDataSourcesRequest {
+  string project = 1;
+  bool allow_cache = 2;
+  map<string, string> tags = 3;
+  PaginationParams pagination = 4;
+  SortingParams sorting = 5;
+}
+
+message InnerListDataSourcesResponse {
+  repeated feast.core.DataSource data_sources = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Inner ListFeatureViews messages
+message InnerListFeatureViewsRequest {
+  string project = 1;
+  bool allow_cache = 2;
+  map<string, string> tags = 3;
+  PaginationParams pagination = 4;
+  SortingParams sorting = 5;
+}
+
+message InnerListFeatureViewsResponse {
+  repeated feast.core.FeatureView feature_views = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Inner ListStreamFeatureViews messages
+message InnerListStreamFeatureViewsRequest {
+  string project = 1;
+  bool allow_cache = 2;
+  map<string, string> tags = 3;
+  PaginationParams pagination = 4;
+  SortingParams sorting = 5;
+}
+
+message InnerListStreamFeatureViewsResponse {
+  repeated feast.core.StreamFeatureView stream_feature_views = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Inner ListOnDemandFeatureViews messages
+message InnerListOnDemandFeatureViewsRequest {
+  string project = 1;
+  bool allow_cache = 2;
+  map<string, string> tags = 3;
+  PaginationParams pagination = 4;
+  SortingParams sorting = 5;
+}
+
+message InnerListOnDemandFeatureViewsResponse {
+  repeated feast.core.OnDemandFeatureView on_demand_feature_views = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Inner ListFeatureServices messages
+message InnerListFeatureServicesRequest {
+  string project = 1;
+  bool allow_cache = 2;
+  map<string, string> tags = 3;
+  string feature_view = 4;
+  PaginationParams pagination = 5;
+  SortingParams sorting = 6;
+}
+
+message InnerListFeatureServicesResponse {
+  repeated feast.core.FeatureService feature_services = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Inner ListPermissions messages
+message InnerListPermissionsRequest {
+  string project = 1;
+  bool allow_cache = 2;
+  map<string, string> tags = 3;
+  PaginationParams pagination = 4;
+  SortingParams sorting = 5;
+}
+
+message InnerListPermissionsResponse {
+  repeated feast.core.Permission permissions = 1;
+  PaginationMetadata pagination = 2;
 }
