@@ -91,22 +91,22 @@ class FeastObjectType(Enum):
         return {
             FeastObjectType.PROJECT: [
                 project_obj
-                for project_obj in registry.list_projects()
+                for project_obj in registry.Inner_list_projects()
                 if project_obj.name == project
             ],
-            FeastObjectType.DATA_SOURCE: registry.list_data_sources(project=project),
-            FeastObjectType.ENTITY: registry.list_entities(project=project),
-            FeastObjectType.FEATURE_VIEW: registry.list_feature_views(project=project),
-            FeastObjectType.ON_DEMAND_FEATURE_VIEW: registry.list_on_demand_feature_views(
+            FeastObjectType.DATA_SOURCE: registry.Inner_list_data_sources(project=project),
+            FeastObjectType.ENTITY: registry.Inner_list_entities(project=project),
+            FeastObjectType.FEATURE_VIEW: registry.Inner_list_feature_views(project=project),
+            FeastObjectType.ON_DEMAND_FEATURE_VIEW: registry.Inner_list_on_demand_feature_views(
                 project=project
             ),
-            FeastObjectType.STREAM_FEATURE_VIEW: registry.list_stream_feature_views(
+            FeastObjectType.STREAM_FEATURE_VIEW: registry.Inner_list_stream_feature_views(
                 project=project,
             ),
-            FeastObjectType.FEATURE_SERVICE: registry.list_feature_services(
+            FeastObjectType.FEATURE_SERVICE: registry.Inner_list_feature_services(
                 project=project
             ),
-            FeastObjectType.PERMISSION: registry.list_permissions(project=project),
+            FeastObjectType.PERMISSION: registry.Inner_list_permissions(project=project),
         }
 
     @staticmethod

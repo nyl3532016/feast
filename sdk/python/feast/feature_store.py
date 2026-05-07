@@ -343,6 +343,21 @@ class FeatureStore:
             if entity.name != DUMMY_ENTITY_NAME or not hide_dummy_entity
         ]
 
+    def inner_list_entities(
+            self,
+            allow_cache: bool = False,
+            hide_dummy_entity: bool = True,
+            tags: Optional[dict[str, str]] = None,
+    ) -> List[Entity]:
+        all_entities = self.registry.Inner_list_entities(
+            self.project, allow_cache=allow_cache, tags=tags
+        )
+        return [
+            entity
+            for entity in all_entities
+            if entity.name != DUMMY_ENTITY_NAME or not hide_dummy_entity
+        ]
+
     def list_feature_services(
         self, tags: Optional[dict[str, str]] = None
     ) -> List[FeatureService]:
@@ -720,7 +735,7 @@ class FeatureStore:
         )
 
         # New feature views may reference previously applied entities.
-        entities = self._list_entities()
+        entities = self.inner_list_entities()
         provider = self._get_provider()
         update_feature_views_with_inferred_features_and_entities(
             provider,
@@ -1147,15 +1162,16 @@ class FeatureStore:
             self.registry.apply_validation_reference(
                 validation_references, project=self.project, commit=False
             )
-        for permission in permissions_to_update:
-            self.registry.apply_permission(
-                permission, project=self.project, commit=False
-            )
+        # 首次添加project时已经默认创建permission拉，此处不需要
+        # for permission in permissions_to_update:
+        #     self.registry.apply_permission(
+        #         permission, project=self.project, commit=False
+        #     )
 
         entities_to_delete = []
         views_to_delete = []
         sfvs_to_delete = []
-        permissions_to_delete = []
+        # permissions_to_delete = []
         if not partial:
             # Delete all registry objects that should not exist.
             entities_to_delete = [
@@ -1184,9 +1200,9 @@ class FeatureStore:
             validation_references_to_delete = [
                 ob for ob in objects_to_delete if isinstance(ob, ValidationReference)
             ]
-            permissions_to_delete = [
-                ob for ob in objects_to_delete if isinstance(ob, Permission)
-            ]
+            # permissions_to_delete = [
+            #     ob for ob in objects_to_delete if isinstance(ob, Permission)
+            # ]
 
             for data_source in data_sources_to_delete:
                 self.registry.delete_data_source(
@@ -1216,10 +1232,10 @@ class FeatureStore:
                 self.registry.delete_validation_reference(
                     validation_references.name, project=self.project, commit=False
                 )
-            for permission in permissions_to_delete:
-                self.registry.delete_permission(
-                    permission.name, project=self.project, commit=False
-                )
+            # for permission in permissions_to_delete:
+            #     self.registry.delete_permission(
+            #         permission.name, project=self.project, commit=False
+            #     )
 
         tables_to_delete: List[FeatureView] = (
             views_to_delete + sfvs_to_delete if not partial else []  # type: ignore

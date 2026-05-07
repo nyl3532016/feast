@@ -277,6 +277,46 @@ class RegistryServerStub(object):
                 request_serializer=feast_dot_registry_dot_RegistryServer__pb2.GetProjectsByJWTRequest.SerializeToString,
                 response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.ListProjectsResponse.FromString,
                 )
+        self.InnerListProjects = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListProjects',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListProjectsRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListProjectsResponse.FromString,
+                )
+        self.InnerListEntities = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListEntities',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListEntitiesRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListEntitiesResponse.FromString,
+                )
+        self.InnerListDataSources = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListDataSources',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListDataSourcesRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListDataSourcesResponse.FromString,
+                )
+        self.InnerListFeatureViews = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListFeatureViews',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureViewsRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureViewsResponse.FromString,
+                )
+        self.InnerListStreamFeatureViews = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListStreamFeatureViews',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListStreamFeatureViewsRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListStreamFeatureViewsResponse.FromString,
+                )
+        self.InnerListOnDemandFeatureViews = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListOnDemandFeatureViews',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListOnDemandFeatureViewsRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListOnDemandFeatureViewsResponse.FromString,
+                )
+        self.InnerListFeatureServices = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListFeatureServices',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureServicesRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureServicesResponse.FromString,
+                )
+        self.InnerListPermissions = channel.unary_unary(
+                '/feast.registry.RegistryServer/InnerListPermissions',
+                request_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListPermissionsRequest.SerializeToString,
+                response_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListPermissionsResponse.FromString,
+                )
 
 
 class RegistryServerServicer(object):
@@ -596,6 +636,56 @@ class RegistryServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def InnerListProjects(self, request, context):
+        """Inner ListProjects for internal use (with pagination support)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InnerListEntities(self, request, context):
+        """Inner List methods without permission checks
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InnerListDataSources(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InnerListFeatureViews(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InnerListStreamFeatureViews(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InnerListOnDemandFeatureViews(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InnerListFeatureServices(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InnerListPermissions(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_RegistryServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -848,6 +938,46 @@ def add_RegistryServerServicer_to_server(servicer, server):
                     servicer.GetProjectsByJWT,
                     request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.GetProjectsByJWTRequest.FromString,
                     response_serializer=feast_dot_registry_dot_RegistryServer__pb2.ListProjectsResponse.SerializeToString,
+            ),
+            'InnerListProjects': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListProjects,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListProjectsRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListProjectsResponse.SerializeToString,
+            ),
+            'InnerListEntities': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListEntities,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListEntitiesRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListEntitiesResponse.SerializeToString,
+            ),
+            'InnerListDataSources': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListDataSources,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListDataSourcesRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListDataSourcesResponse.SerializeToString,
+            ),
+            'InnerListFeatureViews': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListFeatureViews,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureViewsRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureViewsResponse.SerializeToString,
+            ),
+            'InnerListStreamFeatureViews': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListStreamFeatureViews,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListStreamFeatureViewsRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListStreamFeatureViewsResponse.SerializeToString,
+            ),
+            'InnerListOnDemandFeatureViews': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListOnDemandFeatureViews,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListOnDemandFeatureViewsRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListOnDemandFeatureViewsResponse.SerializeToString,
+            ),
+            'InnerListFeatureServices': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListFeatureServices,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureServicesRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureServicesResponse.SerializeToString,
+            ),
+            'InnerListPermissions': grpc.unary_unary_rpc_method_handler(
+                    servicer.InnerListPermissions,
+                    request_deserializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListPermissionsRequest.FromString,
+                    response_serializer=feast_dot_registry_dot_RegistryServer__pb2.InnerListPermissionsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1706,5 +1836,141 @@ class RegistryServer(object):
         return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/GetProjectsByJWT',
             feast_dot_registry_dot_RegistryServer__pb2.GetProjectsByJWTRequest.SerializeToString,
             feast_dot_registry_dot_RegistryServer__pb2.ListProjectsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListProjects(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListProjects',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListProjectsRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListProjectsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListEntities(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListEntities',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListEntitiesRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListEntitiesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListDataSources(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListDataSources',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListDataSourcesRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListDataSourcesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListFeatureViews(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListFeatureViews',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureViewsRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureViewsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListStreamFeatureViews(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListStreamFeatureViews',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListStreamFeatureViewsRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListStreamFeatureViewsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListOnDemandFeatureViews(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListOnDemandFeatureViews',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListOnDemandFeatureViewsRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListOnDemandFeatureViewsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListFeatureServices(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListFeatureServices',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureServicesRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListFeatureServicesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InnerListPermissions(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/feast.registry.RegistryServer/InnerListPermissions',
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListPermissionsRequest.SerializeToString,
+            feast_dot_registry_dot_RegistryServer__pb2.InnerListPermissionsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

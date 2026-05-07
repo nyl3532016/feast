@@ -53,7 +53,18 @@ class GrpcClientAuthHeaderInterceptor(
         logger.debug(
             "Intercepted the grpc api method call to inject Authorization header "
         )
-        metadata = client_call_details.metadata or []
+        metadata = list(client_call_details.metadata or [])
+
+        # 检查是否已有 authorization header（如显式传递时）
+        for key, value in metadata:
+            if isinstance(key, bytes) and key.lower() == b"authorization":
+                logger.debug("Authorization header already exists, skipping")
+                return client_call_details
+            if isinstance(key, str) and key.lower() == "authorization":
+                logger.debug("Authorization header already exists, skipping")
+                return client_call_details
+
+        # 没有则添加
         access_token = get_auth_token(self._auth_config)
         metadata.append((b"authorization", b"Bearer " + access_token.encode("utf-8")))
         client_call_details = client_call_details._replace(metadata=metadata)

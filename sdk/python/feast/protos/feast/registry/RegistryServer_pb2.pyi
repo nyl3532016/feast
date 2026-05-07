@@ -2070,3 +2070,603 @@ class GetFeatureRequest(_message.Message):
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___GetFeatureRequest: _TypeAlias = GetFeatureRequest  # noqa: Y015
+
+@_typing.final
+class InnerListProjectsRequest(_message.Message):
+    """Inner ListProjects messages for internal use"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    allow_cache: _builtins.bool
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "pagination", b"pagination", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListProjectsRequest: _TypeAlias = InnerListProjectsRequest  # noqa: Y015
+
+@_typing.final
+class InnerListProjectsResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PROJECTS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def projects(self) -> _containers.RepeatedCompositeFieldContainer[_Project_pb2.Project]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        projects: _abc.Iterable[_Project_pb2.Project] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "projects", b"projects"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListProjectsResponse: _TypeAlias = InnerListProjectsResponse  # noqa: Y015
+
+@_typing.final
+class InnerListEntitiesRequest(_message.Message):
+    """Inner ListEntities messages"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    PROJECT_FIELD_NUMBER: _builtins.int
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    project: _builtins.str
+    allow_cache: _builtins.bool
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        project: _builtins.str = ...,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "pagination", b"pagination", "project", b"project", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListEntitiesRequest: _TypeAlias = InnerListEntitiesRequest  # noqa: Y015
+
+@_typing.final
+class InnerListEntitiesResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ENTITIES_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def entities(self) -> _containers.RepeatedCompositeFieldContainer[_Entity_pb2.Entity]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        entities: _abc.Iterable[_Entity_pb2.Entity] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["entities", b"entities", "pagination", b"pagination"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListEntitiesResponse: _TypeAlias = InnerListEntitiesResponse  # noqa: Y015
+
+@_typing.final
+class InnerListDataSourcesRequest(_message.Message):
+    """Inner ListDataSources messages"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    PROJECT_FIELD_NUMBER: _builtins.int
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    project: _builtins.str
+    allow_cache: _builtins.bool
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        project: _builtins.str = ...,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "pagination", b"pagination", "project", b"project", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListDataSourcesRequest: _TypeAlias = InnerListDataSourcesRequest  # noqa: Y015
+
+@_typing.final
+class InnerListDataSourcesResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    DATA_SOURCES_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def data_sources(self) -> _containers.RepeatedCompositeFieldContainer[_DataSource_pb2.DataSource]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        data_sources: _abc.Iterable[_DataSource_pb2.DataSource] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["data_sources", b"data_sources", "pagination", b"pagination"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListDataSourcesResponse: _TypeAlias = InnerListDataSourcesResponse  # noqa: Y015
+
+@_typing.final
+class InnerListFeatureViewsRequest(_message.Message):
+    """Inner ListFeatureViews messages"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    PROJECT_FIELD_NUMBER: _builtins.int
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    project: _builtins.str
+    allow_cache: _builtins.bool
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        project: _builtins.str = ...,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "pagination", b"pagination", "project", b"project", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListFeatureViewsRequest: _TypeAlias = InnerListFeatureViewsRequest  # noqa: Y015
+
+@_typing.final
+class InnerListFeatureViewsResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FEATURE_VIEWS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def feature_views(self) -> _containers.RepeatedCompositeFieldContainer[_FeatureView_pb2.FeatureView]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        feature_views: _abc.Iterable[_FeatureView_pb2.FeatureView] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["feature_views", b"feature_views", "pagination", b"pagination"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListFeatureViewsResponse: _TypeAlias = InnerListFeatureViewsResponse  # noqa: Y015
+
+@_typing.final
+class InnerListStreamFeatureViewsRequest(_message.Message):
+    """Inner ListStreamFeatureViews messages"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    PROJECT_FIELD_NUMBER: _builtins.int
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    project: _builtins.str
+    allow_cache: _builtins.bool
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        project: _builtins.str = ...,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "pagination", b"pagination", "project", b"project", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListStreamFeatureViewsRequest: _TypeAlias = InnerListStreamFeatureViewsRequest  # noqa: Y015
+
+@_typing.final
+class InnerListStreamFeatureViewsResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    STREAM_FEATURE_VIEWS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def stream_feature_views(self) -> _containers.RepeatedCompositeFieldContainer[_StreamFeatureView_pb2.StreamFeatureView]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        stream_feature_views: _abc.Iterable[_StreamFeatureView_pb2.StreamFeatureView] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "stream_feature_views", b"stream_feature_views"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListStreamFeatureViewsResponse: _TypeAlias = InnerListStreamFeatureViewsResponse  # noqa: Y015
+
+@_typing.final
+class InnerListOnDemandFeatureViewsRequest(_message.Message):
+    """Inner ListOnDemandFeatureViews messages"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    PROJECT_FIELD_NUMBER: _builtins.int
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    project: _builtins.str
+    allow_cache: _builtins.bool
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        project: _builtins.str = ...,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "pagination", b"pagination", "project", b"project", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListOnDemandFeatureViewsRequest: _TypeAlias = InnerListOnDemandFeatureViewsRequest  # noqa: Y015
+
+@_typing.final
+class InnerListOnDemandFeatureViewsResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ON_DEMAND_FEATURE_VIEWS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def on_demand_feature_views(self) -> _containers.RepeatedCompositeFieldContainer[_OnDemandFeatureView_pb2.OnDemandFeatureView]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        on_demand_feature_views: _abc.Iterable[_OnDemandFeatureView_pb2.OnDemandFeatureView] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["on_demand_feature_views", b"on_demand_feature_views", "pagination", b"pagination"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListOnDemandFeatureViewsResponse: _TypeAlias = InnerListOnDemandFeatureViewsResponse  # noqa: Y015
+
+@_typing.final
+class InnerListFeatureServicesRequest(_message.Message):
+    """Inner ListFeatureServices messages"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    PROJECT_FIELD_NUMBER: _builtins.int
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    FEATURE_VIEW_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    project: _builtins.str
+    allow_cache: _builtins.bool
+    feature_view: _builtins.str
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        project: _builtins.str = ...,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        feature_view: _builtins.str = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "feature_view", b"feature_view", "pagination", b"pagination", "project", b"project", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListFeatureServicesRequest: _TypeAlias = InnerListFeatureServicesRequest  # noqa: Y015
+
+@_typing.final
+class InnerListFeatureServicesResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FEATURE_SERVICES_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def feature_services(self) -> _containers.RepeatedCompositeFieldContainer[_FeatureService_pb2.FeatureService]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        feature_services: _abc.Iterable[_FeatureService_pb2.FeatureService] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["feature_services", b"feature_services", "pagination", b"pagination"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListFeatureServicesResponse: _TypeAlias = InnerListFeatureServicesResponse  # noqa: Y015
+
+@_typing.final
+class InnerListPermissionsRequest(_message.Message):
+    """Inner ListPermissions messages"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    @_typing.final
+    class TagsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        value: _builtins.str
+        def __init__(
+            self,
+            *,
+            key: _builtins.str = ...,
+            value: _builtins.str = ...,
+        ) -> None: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+    PROJECT_FIELD_NUMBER: _builtins.int
+    ALLOW_CACHE_FIELD_NUMBER: _builtins.int
+    TAGS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    SORTING_FIELD_NUMBER: _builtins.int
+    project: _builtins.str
+    allow_cache: _builtins.bool
+    @_builtins.property
+    def tags(self) -> _containers.ScalarMap[_builtins.str, _builtins.str]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationParams: ...
+    @_builtins.property
+    def sorting(self) -> Global___SortingParams: ...
+    def __init__(
+        self,
+        *,
+        project: _builtins.str = ...,
+        allow_cache: _builtins.bool = ...,
+        tags: _abc.Mapping[_builtins.str, _builtins.str] | None = ...,
+        pagination: Global___PaginationParams | None = ...,
+        sorting: Global___SortingParams | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "sorting", b"sorting"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allow_cache", b"allow_cache", "pagination", b"pagination", "project", b"project", "sorting", b"sorting", "tags", b"tags"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListPermissionsRequest: _TypeAlias = InnerListPermissionsRequest  # noqa: Y015
+
+@_typing.final
+class InnerListPermissionsResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PERMISSIONS_FIELD_NUMBER: _builtins.int
+    PAGINATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def permissions(self) -> _containers.RepeatedCompositeFieldContainer[_Permission_pb2.Permission]: ...
+    @_builtins.property
+    def pagination(self) -> Global___PaginationMetadata: ...
+    def __init__(
+        self,
+        *,
+        permissions: _abc.Iterable[_Permission_pb2.Permission] | None = ...,
+        pagination: Global___PaginationMetadata | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["pagination", b"pagination", "permissions", b"permissions"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___InnerListPermissionsResponse: _TypeAlias = InnerListPermissionsResponse  # noqa: Y015

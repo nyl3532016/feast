@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 from typing import Optional
 
 import jwt
@@ -6,7 +8,7 @@ from starlette.authentication import AuthenticationError
 
 from feast.permissions.auth.token_parser import TokenParser
 from feast.permissions.user import User
-import os
+
 logger = logging.getLogger(__name__)
 
 
@@ -22,10 +24,31 @@ class DacpTokenParser(TokenParser):
         "iss": "dacp",
         "iat": 1234567890
     }
+
+    Role mapping:
+        - External role names (e.g., "2", "data_proc_fed") can be mapped to Feast roles ("reader", "writer")
+        - Configure via DACP_ROLE_MAPPING env variable, e.g.:
+          DACP_ROLE_MAPPING='{"2":"writer","data_proc_fed":"writer","1":"reader"}'
     """
 
     def __init__(self):
         self.SECRET = os.getenv("JWT_SECRET", "123456789")
+        # Load role mapping from environment variable
+        self.role_mapping = self._load_role_mapping()
+
+    def _load_role_mapping(self) -> dict:
+        """Load role mapping from DACP_ROLE_MAPPING environment variable."""
+        mapping_str = os.getenv(
+            "DACP_ROLE_MAPPING",
+            '{"2":"writer","data_proc_fed":"writer","1":"reader","data_proc_view":"reader"}'
+        )
+        try:
+            mapping = json.loads(mapping_str)
+            logger.info(f"Loaded DACP role mapping: {mapping}")
+            return mapping
+        except json.JSONDecodeError as e:
+            logger.warning(f"Invalid DACP_ROLE_MAPPING format: {e}. Using empty mapping.")
+            return {}
 
 
     async def user_details_from_access_token(self, access_token: str) -> User:
@@ -43,7 +66,7 @@ class DacpTokenParser(TokenParser):
             raise AuthenticationError("JWT_TOKEN_EMPTY: Missing authentication token")
 
         try:
-            # DACP tokens are unsigned (issued by client from env vars)
+            # DACP tokens are unsigned (issued by client-rbac from env vars)
             data = jwt.decode(
                 access_token,
                 self.SECRET,
@@ -62,18 +85,27 @@ class DacpTokenParser(TokenParser):
         # Add group as role
         group = data.get("group")
         account = data.get("account")
-        role = data.get("role")
+        raw_role = data.get("role")
 
         # 验证必需字段
         if not account:
             raise AuthenticationError("JWT_NO_ACCOUNT: No account found in token payload")
         if not group:
             raise AuthenticationError("JWT_NO_GROUP: No group found in token payload")
-        if not role:
+        if not raw_role:
             raise AuthenticationError("JWT_NO_ROLE: No role found in token payload")
 
-        roles.append(role)
+        # Apply role mapping if configured
+        mapped_role = self.role_mapping.get(raw_role)
+        if mapped_role is None:
+            raise AuthenticationError(f"JWT_NO_ROLE: Mapped role '{raw_role}' -> '{mapped_role}")
 
-        logger.info(f"DACP authenticated user: {account}, roles: {roles}, cur_group:{group}")
+        roles.append(mapped_role)
+
+        logger.info(
+            f"DACP authenticated user: {account}, "
+            f"raw_role: {raw_role}, mapped_role: {mapped_role}, "
+            f"roles: {roles}, cur_group: {group}"
+        )
 
         return User(username=account, roles=roles, cur_group=group)

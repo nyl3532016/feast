@@ -544,3 +544,21 @@ class FeastPermissionError(FeastError, PermissionError):
 
     def http_status_code(self) -> int:
         return HttpStatusCode.HTTP_403_FORBIDDEN
+
+
+class FeastGroupMismatchError(FeastPermissionError):
+    """User group does not match resource group."""
+
+    def __init__(self, user_group: str, resource_group: str, resource: str):
+        super().__init__(
+            f"Group mismatch: user group '{user_group}' cannot access "
+            f"resource in group '{resource_group}': {resource}"
+        )
+
+    def grpc_status_code(self) -> "GrpcStatusCode":
+        from grpc import StatusCode as GrpcStatusCode
+
+        return GrpcStatusCode.PERMISSION_DENIED
+
+    def http_status_code(self) -> int:
+        return HttpStatusCode.HTTP_403_FORBIDDEN
